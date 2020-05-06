@@ -258,8 +258,23 @@ static void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glm::mat4 earth_position;
-	glm::mat4 sun_position;
-	for (int i = 0; i<objects.size(); i++){
+	glm::mat4 head_position;
+	glm::mat4 body1_position;
+	glm::mat4 body2_position;
+	glm::mat4 tail_position;
+	glm::mat4 moon_position;
+	glm::mat4 FLL1_position;
+	glm::mat4 FLL2_position;
+	glm::mat4 FRL1_position;
+	glm::mat4 FRL2_position;
+	glm::mat4 BLL1_position;
+	glm::mat4 BLL2_position;
+	glm::mat4 BRL1_position;
+	glm::mat4 BRL2_position;
+	glm::mat4 wing_left_position;
+	glm::mat4 wing_right_position;
+	for (int i = 0; i<objects.size(); i++)
+	{
 		//VAO VBO are binded in add_Object function
 		glUseProgram(objects[i].program);
 		glBindVertexArray(objects[i].vao);
@@ -269,30 +284,123 @@ static void render()
 		glm::mat4 mPosition;
 
 		//mPosition = glm::translate(mPosition, modelPositions[i]);
-		if (i == 0) {		//for sun
-			sun_position = mPosition;
-			mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		if (i == 0) 
+		{	//for head
+			mPosition = glm::translate(mPosition, glm::vec3(11.5f, 7, 0));
+			head_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
-		else if(i == 1){			//for earth
-			float radiusX = 20.0f;
-			float radiusZ = 30.0f;
-			float X = sin(glfwGetTime()) * radiusX;
-			float Z = cos(glfwGetTime()) * radiusZ;
-			mPosition = sun_position;
-			mPosition = glm::translate(mPosition, glm::vec3(X, 0, Z));
-			earth_position = mPosition;
-			mPosition = glm::rotate(mPosition, (float)glfwGetTime()*5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		else if (i == 1)
+		{	//for body1 (0,0,0)
+			body1_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
-		else {                    // for moon
-			float radiusX = 2.0f;
-			float radiusZ = 3.0f;
-			float X = sin(glfwGetTime() * 4) * radiusX;
-			float Z = cos(glfwGetTime() * 4) * radiusZ;
-			mPosition = earth_position;
-			mPosition = glm::translate(mPosition, glm::vec3(X, 0, Z));
-			mPosition = glm::rotate(mPosition, (float)glfwGetTime()*5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-			mPosition = glm::scale(mPosition, glm::vec3(0.5f, 0.5f, 0.5f));
+		else if (i == 2)
+		{	//for body2
+			mPosition = glm::translate(mPosition, glm::vec3(-14, -9, 0));
+			body2_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
+		else if (i == 3)
+		{	//for tail
+			mPosition = body2_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-14, -9, 0));
+			tail_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(0.1f, 0.0f, 1));
+		}
+		else if (i == 4)
+		{	//for FLL1
+			mPosition = body1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(5, -0.4, -1));
+			FLL1_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 5)
+		{	//for FLL2
+			mPosition = FLL1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(2.7, -0.2, -0.5));
+			FLL2_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 6)
+		{	//for FRL1
+			mPosition = body1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(5, 0.5, 3));
+			FRL1_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 7)
+		{	//for FRL2
+			mPosition = FRL1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(2, 0, 2));
+			FRL2_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 8)
+		{	//for BLL1
+			mPosition = body2_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-8, -8, -0.5));
+			BLL1_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 9)
+		{	//for BLL2
+			mPosition = BLL1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-5.2, -5.6, -1));
+			BLL2_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 10)
+		{	//for BRL1
+			mPosition = body2_position;
+			mPosition = glm::translate(mPosition, glm::vec3(4, 0, 4.5));
+			BRL1_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 11)
+		{	//for BRL2
+			mPosition = BRL1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(2, 0, 2));
+			BRL2_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 12)
+		{	//for wing_left
+			mPosition = body1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-9, 0, -5));
+			wing_left_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(1.8, 0.1, 0.3));
+		}
+		else if (i == 13)
+		{	//for wing_right
+			mPosition = body1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-9, 0, 2));
+			wing_right_position = mPosition;
+			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::scale(mPosition, glm::vec3(1.8, 0.1, 0.3));
+		}
+		
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(mPosition));
 		//std::cout << i<< std::endl;
 		glDrawElements(GL_TRIANGLES, indicesCount[i], GL_UNSIGNED_INT, nullptr);
@@ -336,9 +444,21 @@ int main(int argc, char *argv[])
 	program = setup_shader(readfile("vs.txt").c_str(), readfile("fs.txt").c_str());
 	program2 = setup_shader(readfile("vs.txt").c_str(), readfile("fs.txt").c_str());
 
-	int sun = add_obj(program, "sun.obj", "sun.bmp");
-	int earth = add_obj(program, "earth.obj", "earth.bmp");
-	int moon = add_obj(program, "moon.obj", "moon.bmp");
+	int head = add_obj(program, "sun.obj", "sun.bmp");
+	int body1 = add_obj(program, "sun.obj", "sun.bmp");
+	int body2 = add_obj(program, "sun.obj", "sun.bmp");
+	int tail = add_obj(program, "sun.obj", "sun.bmp");
+	
+	int FLL1 = add_obj(program, "sun.obj", "sun.bmp"); //Front Left Leg1
+	int FLL2 = add_obj(program, "sun.obj", "sun.bmp");
+	int FRL1 = add_obj(program, "sun.obj", "sun.bmp");
+	int FRL2 = add_obj(program, "sun.obj", "sun.bmp");
+	int BLL1 = add_obj(program, "sun.obj", "sun.bmp"); //Back Left Leg1
+	int BLL2 = add_obj(program, "sun.obj", "sun.bmp");
+	int BRL1 = add_obj(program, "sun.obj", "sun.bmp");
+	int BRL2 = add_obj(program, "sun.obj", "sun.bmp");
+	int wing_left = add_obj(program, "sun.obj", "sun.bmp");
+	int wing_right = add_obj(program, "sun.obj", "sun.bmp");
 
 	glEnable(GL_DEPTH_TEST);
 	// prevent faces rendering to the front while they're behind other faces. 
@@ -360,14 +480,19 @@ int main(int argc, char *argv[])
 	float last, start;
 	last = start = glfwGetTime();
 	int fps = 0;
-	objects[sun].model = glm::scale(glm::mat4(1.0f), glm::vec3(0.85f));
+	objects[head].model = glm::scale(glm::mat4(1.0f), glm::vec3(0.85f));
+	objects[body1].model = glm::scale(glm::mat4(1.0f), glm::vec3(0.85f));
+	objects[body2].model = glm::scale(glm::mat4(1.0f), glm::vec3(0.85f));
+	objects[tail].model = glm::scale(glm::mat4(1.0f), glm::vec3(0.85f));
+	
 	while (!glfwWindowShouldClose(window))
-	{//program will keep draw here until you close the window
+	{	//program will keep draw here until you close the window
 		float delta = glfwGetTime() - start;
 
 		render();
 		glfwSwapBuffers(window);	//swap the color buffer and show it as output to the screen.
 		glfwPollEvents();			//check if there is any event being triggered
+		
 		fps++;
 		if (glfwGetTime() - last > 1.0)
 		{
@@ -375,7 +500,9 @@ int main(int argc, char *argv[])
 			fps = 0;
 			last = glfwGetTime();
 		}
+		
 	}
+	
 
 	releaseObjects();
 	glfwDestroyWindow(window);
