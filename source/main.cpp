@@ -11,8 +11,7 @@
 #include "tiny_obj_loader.h"
 
 #define GLM_FORCE_RADIANS
-
-
+int temp = 0;
 struct object_struct{
 	unsigned int program;
 	unsigned int vao;
@@ -286,7 +285,27 @@ static void render()
 		//mPosition = glm::translate(mPosition, modelPositions[i]);
 		if (i == 0) 
 		{	//for head
-			mPosition = glm::translate(mPosition, glm::vec3(11.5f, 7, 0));
+			//mPosition = glm::translate(mPosition, glm::vec3(11.5f, 7, 0));
+			float radiusX = 11.5f;
+			float radiusY = 7.0f;
+			double sec = glfwGetTime();
+			if (sec >= 0.07 || temp == 1)
+			{
+				temp = 1;
+				sec = 0.07 - (sec - 0.07);
+				if (sec <= 0)
+				{
+					temp = 0;
+					glfwSetTime(0.0);
+				}
+			}
+			std::cout << sec << std::endl;
+			float s_val = sin(sec-5.35);
+			float c_val = cos(sec-5.35);
+			float X = s_val * sqrt(radiusX*radiusX + radiusY*radiusY);
+			float Y = c_val * sqrt(radiusX*radiusX + radiusY*radiusY);
+			
+			mPosition = glm::translate(mPosition, glm::vec3(X, Y, 0));
 			head_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
@@ -496,7 +515,7 @@ int main(int argc, char *argv[])
 		fps++;
 		if (glfwGetTime() - last > 1.0)
 		{
-			std::cout << (double)fps / (glfwGetTime() - last) << std::endl;
+			//std::cout << (double)fps / (glfwGetTime() - last) << std::endl;
 			fps = 0;
 			last = glfwGetTime();
 		}
