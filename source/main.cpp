@@ -11,7 +11,8 @@
 #include "tiny_obj_loader.h"
 
 #define GLM_FORCE_RADIANS
-int temp = 0;
+int temp = 0; //control time counter run between the numbers
+int con = 0; //控制各個部位依序轉動
 double sec = 0.0;
 struct object_struct{
 	unsigned int program;
@@ -284,6 +285,11 @@ static void render()
 			{
 				temp = 0;
 				glfwSetTime(0.0);
+				++con;
+				if (con == 3)
+				{
+					con = 0;
+				}
 			}
 		}
 		//std::cout << sec << std::endl;
@@ -307,20 +313,23 @@ static void render()
 			float Y = c_val * sqrt(radiusX*radiusX + radiusY*radiusY);
 			*/
 			mPosition = glm::translate(mPosition, glm::vec3(11.5, 7.0, 0));
-			mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			if (con == 0)
+				mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			head_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
 		else if (i == 1)
 		{	//for body1 (0,0,0)
-			mPosition = glm::rotate(mPosition, (float)sec*0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+			if (con == 1)
+				mPosition = glm::rotate(mPosition, (float)sec*0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
 			body1_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
 		else if (i == 2)
 		{	//for body2
 			mPosition = glm::translate(mPosition, glm::vec3(-14, -9, 0));
-			mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			if (con == 2)
+				mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			body2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
