@@ -12,6 +12,7 @@
 
 #define GLM_FORCE_RADIANS
 int temp = 0;
+double sec = 0.0;
 struct object_struct{
 	unsigned int program;
 	unsigned int vao;
@@ -274,6 +275,18 @@ static void render()
 	glm::mat4 wing_right_position;
 	for (int i = 0; i<objects.size(); i++)
 	{
+		sec = glfwGetTime() / 5;
+		if (sec >= 0.1 || temp == 1)
+		{
+			temp = 1;
+			sec = 0.1 - (sec - 0.1);
+			if (sec <= 0)
+			{
+				temp = 0;
+				glfwSetTime(0.0);
+			}
+		}
+		//std::cout << sec << std::endl;
 		//VAO VBO are binded in add_Object function
 		glUseProgram(objects[i].program);
 		glBindVertexArray(objects[i].vao);
@@ -285,58 +298,46 @@ static void render()
 		//mPosition = glm::translate(mPosition, modelPositions[i]);
 		if (i == 0) 
 		{	//for head
-			//mPosition = glm::translate(mPosition, glm::vec3(11.5f, 7, 0));
+			/*
 			float radiusX = 11.5f;
 			float radiusY = 7.0f;
-			double sec = glfwGetTime();
-			if (sec >= 0.07 || temp == 1)
-			{
-				temp = 1;
-				sec = 0.07 - (sec - 0.07);
-				if (sec <= 0)
-				{
-					temp = 0;
-					glfwSetTime(0.0);
-				}
-			}
-			std::cout << sec << std::endl;
 			float s_val = sin(sec-5.35);
 			float c_val = cos(sec-5.35);
 			float X = s_val * sqrt(radiusX*radiusX + radiusY*radiusY);
 			float Y = c_val * sqrt(radiusX*radiusX + radiusY*radiusY);
-			
-			mPosition = glm::translate(mPosition, glm::vec3(X, Y, 0));
+			*/
+			mPosition = glm::translate(mPosition, glm::vec3(11.5, 7.0, 0));
+			mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			head_position = mPosition;
-			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
 		else if (i == 1)
 		{	//for body1 (0,0,0)
+			mPosition = glm::rotate(mPosition, (float)sec*0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
 			body1_position = mPosition;
-			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
 		else if (i == 2)
 		{	//for body2
 			mPosition = glm::translate(mPosition, glm::vec3(-14, -9, 0));
+			mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			body2_position = mPosition;
-			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
 		else if (i == 3)
 		{	//for tail
 			mPosition = body2_position;
 			mPosition = glm::translate(mPosition, glm::vec3(-14, -9, 0));
-			tail_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			tail_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(0.1f, 0.0f, 1));
 		}
 		else if (i == 4)
 		{	//for FLL1
 			mPosition = body1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(5, -0.4, -1));
-			FLL1_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			FLL1_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
 		}
@@ -344,8 +345,8 @@ static void render()
 		{	//for FLL2
 			mPosition = FLL1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(2.7, -0.2, -0.5));
-			FLL2_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			FLL2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
 		}
@@ -353,8 +354,8 @@ static void render()
 		{	//for FRL1
 			mPosition = body1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(5, 0.5, 3));
-			FRL1_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			FRL1_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
 		}
@@ -362,8 +363,8 @@ static void render()
 		{	//for FRL2
 			mPosition = FRL1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(2, 0, 2));
-			FRL2_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			FRL2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
 		}
@@ -371,8 +372,8 @@ static void render()
 		{	//for BLL1
 			mPosition = body2_position;
 			mPosition = glm::translate(mPosition, glm::vec3(-8, -8, -0.5));
-			BLL1_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			BLL1_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
 		}
@@ -380,8 +381,8 @@ static void render()
 		{	//for BLL2
 			mPosition = BLL1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(-5.2, -5.6, -1));
-			BLL2_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			BLL2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
 		}
@@ -389,8 +390,8 @@ static void render()
 		{	//for BRL1
 			mPosition = body2_position;
 			mPosition = glm::translate(mPosition, glm::vec3(4, 0, 4.5));
-			BRL1_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			BRL1_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
 		}
@@ -398,8 +399,8 @@ static void render()
 		{	//for BRL2
 			mPosition = BRL1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(2, 0, 2));
-			BRL2_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			BRL2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
 		}
@@ -407,16 +408,16 @@ static void render()
 		{	//for wing_left
 			mPosition = body1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(-9, 0, -5));
-			wing_left_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			wing_left_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(1.8, 0.1, 0.3));
 		}
 		else if (i == 13)
 		{	//for wing_right
 			mPosition = body1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(-9, 0, 2));
-			wing_right_position = mPosition;
 			//mPosition = glm::rotate(mPosition, (float)glfwGetTime()*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			wing_right_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(1.8, 0.1, 0.3));
 		}
 		
