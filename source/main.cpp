@@ -265,7 +265,7 @@ static void setUniformMat4(unsigned int program, const std::string &name, const 
 	glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-static void render()
+static void basic_render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glm::mat4 earth_position;
@@ -479,7 +479,7 @@ static void run_render()
 	glm::mat4 wing_right_position;
 	for (int i = 0; i<objects.size(); i++)
 	{
-		sec = glfwGetTime() / 5;
+		sec = glfwGetTime() / 2;
 		if (sec >= 0.1 || temp == 1)
 		{
 			temp = 1;
@@ -510,20 +510,20 @@ static void run_render()
 			float Y = c_val * sqrt(radiusX*radiusX + radiusY*radiusY);
 			*/
 			mPosition = glm::translate(mPosition, glm::vec3(11.5, 7.0, 0));
-			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			head_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
 		else if (i == 1)
 		{	//for body1 (0,0,0)
-			//mPosition = glm::rotate(mPosition, (float)sec*0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::rotate(mPosition, (float)sec*0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
 			body1_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
 		else if (i == 2)
 		{	//for body2
 			mPosition = glm::translate(mPosition, glm::vec3(-14, -9, 0));
-			//mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			body2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
 		}
@@ -548,7 +548,7 @@ static void run_render()
 		{	//for FLL2
 			mPosition = FLL1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(2.7, -0.2, -0.5));
-			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			FLL2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 1, 1.5));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
@@ -566,7 +566,7 @@ static void run_render()
 		{	//for FRL2
 			mPosition = FRL1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(2, 0, 2));
-			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			FRL2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 1, 1.5));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
@@ -584,7 +584,7 @@ static void run_render()
 		{	//for BLL2
 			mPosition = BLL1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(-4.5, -4.5, -1));
-			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 			BLL2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 1, 1.5));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
@@ -602,7 +602,7 @@ static void run_render()
 		{	//for BRL2
 			mPosition = BRL1_position;
 			mPosition = glm::translate(mPosition, glm::vec3(2, 0, 2));
-			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(1.0f, 1.0f, 0.0f));
+			mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(1.0f, 1.0f, 0.0f));
 			BRL2_position = mPosition;
 			mPosition = glm::scale(mPosition, glm::vec3(2, 1, 1.5));
 			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
@@ -711,7 +711,7 @@ int main(int argc, char *argv[])
 	{	//program will keep draw here until you close the window
 		float delta = glfwGetTime() - start;
 		if (run == 0) //Basic mode
-			render();
+			basic_render();
 		else //Running mode
 			run_render();
 		glfwSwapBuffers(window);	//swap the color buffer and show it as output to the screen.
