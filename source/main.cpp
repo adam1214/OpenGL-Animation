@@ -13,6 +13,7 @@
 #define GLM_FORCE_RADIANS
 int temp = 0; //control time counter run between the numbers
 int con = 0; //控制各個部位依序轉動
+int run = 0; //控制是否進入跑動狀態
 double sec = 0.0;
 struct object_struct{
 	unsigned int program;
@@ -33,8 +34,17 @@ static void error_callback(int error, const char* description)
 }
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (key == GLFW_KEY_B && action == GLFW_PRESS)
+	{
+		printf("Basic mode\n");
+		run = 0;
+	}
+
+	if (key == GLFW_KEY_R && action == GLFW_PRESS)
+	{
+		printf("Running mode\n");
+		run = 1;
+	}
 }
 
 static unsigned int setup_shader(const char *vertex_shader, const char *fragment_shader)
@@ -448,6 +458,179 @@ static void render()
 	glBindVertexArray(0);
 }
 
+static void run_render()
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glm::mat4 earth_position;
+	glm::mat4 head_position;
+	glm::mat4 body1_position;
+	glm::mat4 body2_position;
+	glm::mat4 tail_position;
+	glm::mat4 moon_position;
+	glm::mat4 FLL1_position;
+	glm::mat4 FLL2_position;
+	glm::mat4 FRL1_position;
+	glm::mat4 FRL2_position;
+	glm::mat4 BLL1_position;
+	glm::mat4 BLL2_position;
+	glm::mat4 BRL1_position;
+	glm::mat4 BRL2_position;
+	glm::mat4 wing_left_position;
+	glm::mat4 wing_right_position;
+	for (int i = 0; i<objects.size(); i++)
+	{
+		sec = glfwGetTime() / 5;
+		if (sec >= 0.1 || temp == 1)
+		{
+			temp = 1;
+			sec = 0.1 - (sec - 0.1);
+			if (sec <= 0)
+			{
+				temp = 0;
+				glfwSetTime(0.0);
+			}
+		}
+		//VAO VBO are binded in add_Object function
+		glUseProgram(objects[i].program);
+		glBindVertexArray(objects[i].vao);
+		glBindTexture(GL_TEXTURE_2D, objects[i].texture);
+		//you should send some data to shader here
+		GLint modelLoc = glGetUniformLocation(objects[i].program, "model");
+		glm::mat4 mPosition;
+
+		//mPosition = glm::translate(mPosition, modelPositions[i]);
+		if (i == 0)
+		{	//for head
+			/*
+			float radiusX = 11.5f;
+			float radiusY = 7.0f;
+			float s_val = sin(sec-5.35);
+			float c_val = cos(sec-5.35);
+			float X = s_val * sqrt(radiusX*radiusX + radiusY*radiusY);
+			float Y = c_val * sqrt(radiusX*radiusX + radiusY*radiusY);
+			*/
+			mPosition = glm::translate(mPosition, glm::vec3(11.5, 7.0, 0));
+			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			head_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
+		}
+		else if (i == 1)
+		{	//for body1 (0,0,0)
+			//mPosition = glm::rotate(mPosition, (float)sec*0.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+			body1_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
+		}
+		else if (i == 2)
+		{	//for body2
+			mPosition = glm::translate(mPosition, glm::vec3(-14, -9, 0));
+			//mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			body2_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(0.9f, 0.0f, 1));
+		}
+		else if (i == 3)
+		{	//for tail
+			mPosition = body2_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-13, -9, 0));
+			//mPosition = glm::rotate(mPosition, (float)sec*(-2.0f), glm::vec3(1.0f, 0.0f, 1.0f));
+			tail_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(0.1f, 0.0f, 1));
+		}
+		else if (i == 4)
+		{	//for FLL1
+			mPosition = body1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(5, -0.4, -1));
+			mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			FLL1_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 5)
+		{	//for FLL2
+			mPosition = FLL1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(2.7, -0.2, -0.5));
+			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			FLL2_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(2, 1, 1.5));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 6)
+		{	//for FRL1
+			mPosition = body1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(5, 0.5, 3));
+			mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			FRL1_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 7)
+		{	//for FRL2
+			mPosition = FRL1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(2, 0, 2));
+			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			FRL2_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(2, 1, 1.5));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 8)
+		{	//for BLL1
+			mPosition = body2_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-8, -8, -0.5));
+			mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+			BLL1_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 9)
+		{	//for BLL2
+			mPosition = BLL1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-4.5, -4.5, -1));
+			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			BLL2_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(2, 1, 1.5));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 10)
+		{	//for BRL1
+			mPosition = body2_position;
+			mPosition = glm::translate(mPosition, glm::vec3(4, 0, 4));
+			mPosition = glm::rotate(mPosition, (float)sec*1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+			BRL1_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(2, 0.1f, 2));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 11)
+		{	//for BRL2
+			mPosition = BRL1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(2, 0, 2));
+			//mPosition = glm::rotate(mPosition, (float)sec*3.0f, glm::vec3(1.0f, 1.0f, 0.0f));
+			BRL2_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(2, 1, 1.5));
+			mPosition = glm::scale(mPosition, glm::vec3(0.15f));
+		}
+		else if (i == 12)
+		{	//for wing_left
+			mPosition = body1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-9, 0, -4.5));
+			//mPosition = glm::rotate(mPosition, (float)sec*(-0.30f), glm::vec3(0.0f, 1.0f, 1.0f));
+			wing_left_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(1.8, 0.1, 0.3));
+		}
+		else if (i == 13)
+		{	//for wing_right
+			mPosition = body1_position;
+			mPosition = glm::translate(mPosition, glm::vec3(-9, 0, 2));
+			//mPosition = glm::rotate(mPosition, (float)sec*(-0.30f), glm::vec3(0.0f, 1.0f, 1.0f));
+			wing_right_position = mPosition;
+			mPosition = glm::scale(mPosition, glm::vec3(1.8, 0.1, 0.3));
+		}
+
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(mPosition));
+		//std::cout << i<< std::endl;
+		glDrawElements(GL_TRIANGLES, indicesCount[i], GL_UNSIGNED_INT, nullptr);
+	}
+	glBindVertexArray(0);
+}
+
 int main(int argc, char *argv[])
 {
 	GLFWwindow* window;
@@ -469,7 +652,6 @@ int main(int argc, char *argv[])
 	}
 
 	glfwMakeContextCurrent(window);	//set current window as main window to focus
-
 	// This line MUST put below glfwMakeContextCurrent
 	glewExperimental = GL_TRUE;		//tell glew to use more modern technique for managing OpenGL functionality
 	glewInit();
@@ -528,8 +710,10 @@ int main(int argc, char *argv[])
 	while (!glfwWindowShouldClose(window))
 	{	//program will keep draw here until you close the window
 		float delta = glfwGetTime() - start;
-
-		render();
+		if (run == 0) //Basic mode
+			render();
+		else //Running mode
+			run_render();
 		glfwSwapBuffers(window);	//swap the color buffer and show it as output to the screen.
 		glfwPollEvents();			//check if there is any event being triggered
 		
